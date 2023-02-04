@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.FilmorateApplication;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@Slf4j
 public class FilmController
 {
 	// Пока это будет так хранится.
@@ -31,15 +33,19 @@ public class FilmController
 	@PostMapping("/films")
 	public void addFilm(@RequestBody Film film)
 	{
+		validate(film);
 		films.put(lastId + 1, film);
 		film.setId(lastId + 1);
 		lastId++;
+		log.info("Фильм был добавлен, его номер: " + lastId);
 	}
 	@PostMapping("/films/{id}")
 	public void ReplaceFilm(@RequestBody Film film, @PathVariable int id)
 	{
+		validate(film);
 		films.replace(id, film);
 		film.setId(id);
+		log.info("Фильм под номером " + id + " был обновлён.");
 	}
 
 	public static boolean validate(Film film)

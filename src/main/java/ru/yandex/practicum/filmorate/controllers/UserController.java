@@ -42,7 +42,7 @@ public class UserController
 		validate(user);
 		users.replace(id, user);
 		user.setId(id);
-		log.info("Пользователь номер " + id + " был заменён.");
+		log.info("Пользователь номер " + id + " был обновлён.");
 	}
 
 	public static boolean validate(User user)
