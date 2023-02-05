@@ -59,7 +59,7 @@ public class FilmController
 
 		if(film.getName().isEmpty()) { throw new ValidationException(); }
 		if(film.getDescription().length() > 200) { throw new ValidationException(); }
-		if(film.getDuration().isNegative()) { throw new ValidationException(); }
+		if(film.getDuration() < 0) { throw new ValidationException(); }
 		if(film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))  { throw new ValidationException();}
 
 		return true;

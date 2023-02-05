@@ -12,5 +12,7 @@ public class Film {
     @NotNull private String name;
     @NotNull private String description;
     @NotNull private LocalDate releaseDate;
-    @NotNull private Duration duration;
+    @NotNull private int duration;
+    // К сожалению в ТЗ не указали тип переменной,
+    // которая должна отвечать за продолжительность. Я выбрал int, исходя из ответов которые ожидаются.
 }

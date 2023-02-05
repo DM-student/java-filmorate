@@ -19,7 +19,7 @@ class FilmControllerTest
 	{
 		film.setName("Test");
 		film.setDescription("Testing.");
-		film.setDuration(Duration.ofHours(2));
+		film.setDuration(100);
 		film.setReleaseDate(LocalDate.now());
 	}
 	@Test
@@ -41,7 +41,7 @@ class FilmControllerTest
 	@Test
 	void testDurationValidationFail()
 	{
-		film.setDuration(Duration.ofHours(-1));
+		film.setDuration(-100);
 		assertThrows(ValidationException.class, () ->{
 			FilmController.validate(film);
 		});
@@ -59,7 +59,7 @@ class FilmControllerTest
 	{
 		film.setName("-");
 		film.setDescription(String.valueOf(new char[200]));
-		film.setDuration(Duration.ofHours(0));
+		film.setDuration(0);
 		film.setReleaseDate(LocalDate.of(1895, 12, 28));
 		FilmController.validate(film);
 	}

@@ -53,7 +53,7 @@ public class UserController
 		{
 			throw new ValidationException();
 		}
-
+		if (user.getName().isEmpty() || user.getName() == null) {user.setName(user.getLogin());}
 		if(user.getLogin().isEmpty() || user.getLogin().contains(" ")) { throw new ValidationException(); }
 		if(user.getBirthday().isAfter(LocalDate.now())) { throw new ValidationException(); }
 		return true;
