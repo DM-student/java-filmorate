@@ -39,7 +39,7 @@ public class FilmController
 		lastId++;
 		log.info("Фильм был добавлен, его номер: " + lastId);
 	}
-	@PostMapping("/films")
+	@PutMapping("/films")
 	public void ReplaceFilm(@RequestBody Film film)
 	{
 		validate(film);
