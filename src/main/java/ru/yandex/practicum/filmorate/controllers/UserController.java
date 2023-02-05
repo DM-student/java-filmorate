@@ -28,21 +28,23 @@ public class UserController
 		return users.get(id);
 	}
 	@PostMapping("/users")
-	public void addUser(@RequestBody User user)
+	public User addUser(@RequestBody User user)
 	{
 		validate(user);
 		users.put(lastId + 1, user);
 		user.setId(lastId + 1);
 		lastId++;
 		log.info("Пользователь был добавлен, его номер: " + lastId);
+		return user;
 	}
 	@PutMapping("/users")
 	public User ReplaceUser(@RequestBody User user)
 	{
 		if(!users.containsKey(user.getId())) { throw new RuntimeException(new IllegalArgumentException()); }
 		validate(user);
+		users.replace(user.getId(), user);
 		log.info("Пользователь номер " + user.getId() + " был обновлён.");
-		return users.replace(user.getId(), user);
+		return user;
 	}
 
 	public static boolean validate(User user)

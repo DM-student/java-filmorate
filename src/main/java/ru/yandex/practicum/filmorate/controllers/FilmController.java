@@ -31,21 +31,23 @@ public class FilmController
 		return films.get(id);
 	}
 	@PostMapping("/films")
-	public void addFilm(@RequestBody Film film)
+	public Film addFilm(@RequestBody Film film)
 	{
 		validate(film);
 		films.put(lastId + 1, film);
 		film.setId(lastId + 1);
 		lastId++;
 		log.info("Фильм был добавлен, его номер: " + lastId);
+		return film;
 	}
 	@PutMapping("/films")
 	public Film ReplaceFilm(@RequestBody Film film)
 	{
 		if(!films.containsKey(film.getId())) { throw new RuntimeException(new IllegalArgumentException()); }
 		validate(film);
+		films.replace(film.getId(), film);
 		log.info("Фильм под номером " + film.getId() + " был обновлён.");
-		return films.replace(film.getId(), film);
+		return film;
 	}
 
 	public static boolean validate(Film film)
