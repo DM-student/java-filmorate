@@ -37,11 +37,12 @@ public class UserController
 		log.info("Пользователь был добавлен, его номер: " + lastId);
 	}
 	@PutMapping("/users")
-	public void ReplaceUser(@RequestBody User user)
+	public User ReplaceUser(@RequestBody User user)
 	{
+		if(!users.containsKey(user.getId())) { throw new RuntimeException(new IllegalArgumentException()); }
 		validate(user);
-		users.replace(user.getId(), user);
 		log.info("Пользователь номер " + user.getId() + " был обновлён.");
+		return users.replace(user.getId(), user);
 	}
 
 	public static boolean validate(User user)

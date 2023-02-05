@@ -40,11 +40,12 @@ public class FilmController
 		log.info("Фильм был добавлен, его номер: " + lastId);
 	}
 	@PutMapping("/films")
-	public void ReplaceFilm(@RequestBody Film film)
+	public Film ReplaceFilm(@RequestBody Film film)
 	{
+		if(!films.containsKey(film.getId())) { throw new RuntimeException(new IllegalArgumentException()); }
 		validate(film);
-		films.replace(film.getId(), film);
 		log.info("Фильм под номером " + film.getId() + " был обновлён.");
+		return films.replace(film.getId(), film);
 	}
 
 	public static boolean validate(Film film)

@@ -12,6 +12,6 @@ public class User
 	private int id;
 	@NotNull @Email private String email;
 	@NotNull private String login;
-	@NotNull private String name;
+	private String name;
 	@NotNull private LocalDate birthday;
 }
