@@ -36,13 +36,12 @@ public class UserController
 		lastId++;
 		log.info("Пользователь был добавлен, его номер: " + lastId);
 	}
-	@PostMapping("/users/{id}")
-	public void ReplaceUser(@RequestBody User user, @PathVariable int id)
+	@PutMapping("/users")
+	public void ReplaceUser(@RequestBody User user)
 	{
 		validate(user);
-		users.replace(id, user);
-		user.setId(id);
-		log.info("Пользователь номер " + id + " был обновлён.");
+		users.replace(user.getId(), user);
+		log.info("Пользователь номер " + user.getId() + " был обновлён.");
 	}
 
 	public static boolean validate(User user)

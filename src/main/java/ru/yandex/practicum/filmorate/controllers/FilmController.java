@@ -39,13 +39,12 @@ public class FilmController
 		lastId++;
 		log.info("Фильм был добавлен, его номер: " + lastId);
 	}
-	@PostMapping("/films/{id}")
-	public void ReplaceFilm(@RequestBody Film film, @PathVariable int id)
+	@PostMapping("/films")
+	public void ReplaceFilm(@RequestBody Film film)
 	{
 		validate(film);
-		films.replace(id, film);
-		film.setId(id);
-		log.info("Фильм под номером " + id + " был обновлён.");
+		films.replace(film.getId(), film);
+		log.info("Фильм под номером " + film.getId() + " был обновлён.");
 	}
 
 	public static boolean validate(Film film)
