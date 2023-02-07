@@ -12,7 +12,7 @@ public class Film {
     @NotNull private String name;
     @NotNull private String description;
     @NotNull private LocalDate releaseDate;
-    @NotNull private int duration;
-    // К сожалению в ТЗ не указали тип переменной,
-    // которая должна отвечать за продолжительность. Я выбрал int, исходя из ответов которые ожидаются.
+    @NotNull private int duration; // Если я буду использовать Duration, то код не пройдёт тесты.
+    // Ожидается что это значение будет отвечать за длину в минутах. Я конечно могу теоретически
+    // написать свой код отвечающий за переработку объекта в JSON, но не уверен, потяну ли я такое.
 }

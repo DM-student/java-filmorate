@@ -40,22 +40,18 @@ public class UserController
 	@PutMapping("/users")
 	public User ReplaceUser(@RequestBody User user)
 	{
-		if(!users.containsKey(user.getId())) { throw new RuntimeException(new IllegalArgumentException()); }
+		if(!users.containsKey(user.getId())) { throw new IllegalArgumentException(); }
 		validate(user);
 		users.replace(user.getId(), user);
 		log.info("Пользователь номер " + user.getId() + " был обновлён.");
 		return user;
 	}
 
-	public static boolean validate(User user)
+	public static void validate(User user)
 	{
-		if(!FilmorateApplication.validator.validate(user).isEmpty())
-		{
-			throw new ValidationException();
-		}
+		if(!FilmorateApplication.validator.validate(user).isEmpty()) { throw new ValidationException(); }
 		if (user.getName() == null || user.getName().isEmpty()) {user.setName(user.getLogin());}
 		if(user.getLogin().isEmpty() || user.getLogin().contains(" ")) { throw new ValidationException(); }
 		if(user.getBirthday().isAfter(LocalDate.now())) { throw new ValidationException(); }
-		return true;
 	}
 }

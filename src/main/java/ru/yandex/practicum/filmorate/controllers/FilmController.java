@@ -43,25 +43,19 @@ public class FilmController
 	@PutMapping("/films")
 	public Film ReplaceFilm(@RequestBody Film film)
 	{
-		if(!films.containsKey(film.getId())) { throw new RuntimeException(new IllegalArgumentException()); }
+		if(!films.containsKey(film.getId())) { throw new IllegalArgumentException(); }
 		validate(film);
 		films.replace(film.getId(), film);
 		log.info("Фильм под номером " + film.getId() + " был обновлён.");
 		return film;
 	}
 
-	public static boolean validate(Film film)
+	public static void validate(Film film)
 	{
-		if(!FilmorateApplication.validator.validate(film).isEmpty())
-		{
-			throw new ValidationException();
-		}
-
+		if(!FilmorateApplication.validator.validate(film).isEmpty()) { throw new ValidationException(); }
 		if(film.getName().isEmpty()) { throw new ValidationException(); }
 		if(film.getDescription().length() > 200) { throw new ValidationException(); }
 		if(film.getDuration() < 0) { throw new ValidationException(); }
 		if(film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28)))  { throw new ValidationException();}
-
-		return true;
 	}
 }
