@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storages.FilmStorage;
 import ru.yandex.practicum.filmorate.storages.InMemoryFilmStorage;
@@ -19,23 +20,19 @@ public class FilmService
 	@Autowired
 	private UserService userService;
 
-	public FilmStorage getFilmStorage()
-	{
-		return films;
-	}
 	public void addLike(long filmId, long userId)
 	{
 		if(films.getFilm(filmId) == null)
 		{
-			throw new NullPointerException("Данный фильм не найден.");
-		}
-		if(films.getFilm(filmId) == null)
-		{
-			throw new NullPointerException("Данный фильм не найден.");
+			throw new NotFoundException("Film ID" + filmId);
 		}
 		if(userService.userIsPresent(userId))
 		{
-			throw new IllegalArgumentException("Пользователя с таким ID не найден.");
+			throw new NotFoundException("User ID" + userId);
+		}
+		if(films.getFilm(filmId).getLikes().contains(userId))
+		{
+			throw new IllegalArgumentException("Данный фильм уже имеет лайк от данного пользователя.");
 		}
 		films.getFilm(filmId).getLikes().add(userId);
 	}
@@ -43,15 +40,15 @@ public class FilmService
 	{
 		if(films.getFilm(filmId) == null)
 		{
-			throw new NullPointerException("Данный фильм не найден.");
+			throw new NotFoundException("Film ID" + filmId);
 		}
 		if(userService.userIsPresent(userId))
 		{
-			throw new NullPointerException("Пользователя с таким ID не найден.");
+			throw new NotFoundException("User ID" + userId);
 		}
 		if(!films.getFilm(filmId).getLikes().contains(userId))
 		{
-			throw new NullPointerException("Данный фильм не имеет лайка от данного пользователя.");
+			throw new NotFoundException("Like from User ID" + userId);
 		}
 	}
 	public List<Film> getPopular(int count)
@@ -60,6 +57,22 @@ public class FilmService
 				.limit(count).collect(Collectors.toUnmodifiableList());
 	}
 
+	public Film getFilm(long id)
+	{
+		return films.getFilm(id);
+	}
+	public List<Film> getFilms()
+	{
+		return films.getFilms();
+	}
+	public void addFilm(Film film)
+	{
+		films.addFilm(film);
+	}
+	public void replaceFilm(Film film)
+	{
+		films.replaceFilm(film);
+	}
 	@Autowired
 	public FilmService(InMemoryFilmStorage filmStorage)
 	{

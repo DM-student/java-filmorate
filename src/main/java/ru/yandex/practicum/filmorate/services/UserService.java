@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storages.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storages.UserStorage;
@@ -15,13 +16,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService
 {
-	@Autowired
 	private UserStorage users;
 
-	public UserStorage getUserStorage()
-	{
-		return users;
-	}
 	public boolean userIsPresent(long id)
 	{
 		return users.getUsers().contains(id);
@@ -30,11 +26,11 @@ public class UserService
 	{
 		if(users.getUser(userId) == null)
 		{
-			throw new NullPointerException("Пользователь добавляющий в друзья не найден.");
+			throw new NotFoundException("User ID" + userId);
 		}
 		if(users.getUser(targetId) == null)
 		{
-			throw new NullPointerException("Цель для добавления в друзья не найдена.");
+			throw new NotFoundException("User ID" + targetId);
 		}
 		if(users.getUser(userId).getFriends().contains(targetId))
 		{
@@ -47,15 +43,15 @@ public class UserService
 	{
 		if(users.getUser(userId) == null)
 		{
-			throw new NullPointerException("Пользователь добавляющий в друзья не найден.");
+			throw new NotFoundException("User ID" + userId);
 		}
 		if(users.getUser(targetId) == null)
 		{
-			throw new NullPointerException("Цель для добавления в друзья не найдена.");
+			throw new NotFoundException("User ID" + targetId);
 		}
 		if(!users.getUser(userId).getFriends().contains(targetId))
 		{
-			throw new NullPointerException("Цели нет в друзьях у пользователя.");
+			throw new NotFoundException("User ID" + userId +"`s friend with ID" + targetId);
 		}
 		users.getUser(userId).getFriends().remove(targetId);
 		users.getUser(targetId).getFriends().remove(userId);
@@ -71,6 +67,23 @@ public class UserService
 	public List<User> getFriends(long id)
 	{
 		return users.getUser(id).getFriends().stream().map(users::getUser).collect(Collectors.toUnmodifiableList());
+	}
+
+	public User getUser(long id)
+	{
+		return users.getUser(id);
+	}
+	public List<User> getUsers()
+	{
+		return users.getUsers();
+	}
+	public void addUser(User user)
+	{
+		users.addUser(user);
+	}
+	public void replaceUser(User user)
+	{
+		users.replaceUser(user);
 	}
 
 	@Autowired

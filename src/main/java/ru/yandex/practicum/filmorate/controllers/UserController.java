@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.services.AnnotationValidator;
@@ -25,29 +26,29 @@ public class UserController
 	@GetMapping("/users")
 	public List<User> getUsers()
 	{
-		return userService.getUserStorage().getUsers();
+		return userService.getUsers();
 	}
 	@GetMapping("/users/{id}")
 	public User getUser(@PathVariable long id)
 	{
-		if(userService.getUserStorage().getUser(id) == null)
+		if(userService.getUser(id) == null)
 		{
-			throw new NullPointerException("Пользователь не найден.");
+			throw new NotFoundException("User ID" + id);
 		}
-		return userService.getUserStorage().getUser(id);
+		return userService.getUser(id);
 	}
 	@PostMapping("/users")
 	public User addUser(@RequestBody User user)
 	{
 		if(!isValid(user)) { throw new ValidationException(); }
-		userService.getUserStorage().addUser(user);
+		userService.addUser(user);
 		return user;
 	}
 	@PutMapping("/users")
 	public User ReplaceUser(@RequestBody User user)
 	{
 		if(!isValid(user)) { throw new ValidationException(); }
-		userService.getUserStorage().replaceUser(user);
+		userService.replaceUser(user);
 		return user;
 	}
 	@PutMapping("/users/{id}/friends/{friendId}")
@@ -75,19 +76,20 @@ public class UserController
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Map<String, String> validationException(ValidationException e)
 	{
-		return Map.of("error", "Ошибка валидации.");
+		return Map.of("error", e.getMessage());
 	}
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public Map<String, String> IllegalArgument(IllegalArgumentException e)
+	public Map<String, String> serverError(Throwable e)
 	{
-		return Map.of("error", "Данный запрос не может быть обработан.");
+		return Map.of("error", "Данный запрос не может быть обработан."
+				,"errorInfo", e.getMessage());
 	}
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public Map<String, String> nullPointer(NullPointerException e)
+	public Map<String, String> NotFound(NotFoundException e)
 	{
-		return Map.of("error", "Данные по запросу не найдены.");
+		return Map.of("error", e.getMessage());
 	}
 	public boolean isValid(User user)
 	{

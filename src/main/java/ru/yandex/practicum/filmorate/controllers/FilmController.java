@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.services.AnnotationValidator;
@@ -27,29 +28,29 @@ public class FilmController
 	@GetMapping("/films")
 	public List<Film> getFilms()
 	{
-		return filmService.getFilmStorage().getFilms();
+		return filmService.getFilms();
 	}
 	@GetMapping("/films/{id}")
 	public Film getFilm(@PathVariable long id)
 	{
-		if(filmService.getFilmStorage().getFilm(id) == null)
+		if(filmService.getFilm(id) == null)
 		{
-			throw new NullPointerException("Фильм не найден.");
+			throw new NotFoundException("Film ID" + id);
 		}
-		return filmService.getFilmStorage().getFilm(id);
+		return filmService.getFilm(id);
 	}
 	@PostMapping("/films")
 	public Film addFilm(@RequestBody Film film)
 	{
 		if(!isValid(film)) {throw new ValidationException();}
-		filmService.getFilmStorage().addFilm(film);
+		filmService.addFilm(film);
 		return film;
 	}
 	@PutMapping("/films")
 	public Film ReplaceFilm(@RequestBody Film film)
 	{
 		if(!isValid(film)) {throw new ValidationException();}
-		filmService.getFilmStorage().replaceFilm(film);
+		filmService.replaceFilm(film);
 		return film;
 	}
 
@@ -73,19 +74,20 @@ public class FilmController
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public Map<String, String> validationException(ValidationException e)
 	{
-		return Map.of("error", "Ошибка валидации.");
+		return Map.of("error", e.getMessage());
 	}
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public Map<String, String> IllegalArgument(IllegalArgumentException e)
+	public Map<String, String> serverError(Throwable e)
 	{
-		return Map.of("error", "Данный запрос не может быть обработан.");
+		return Map.of("error", "Данный запрос не может быть обработан.",
+				"errorInfo:", e.getMessage());
 	}
 	@ExceptionHandler
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public Map<String, String> nullPointer(NullPointerException e)
+	public Map<String, String> notFoundError(NotFoundException e)
 	{
-		return Map.of("error", "Данные по запросу не найдены.");
+		return Map.of("error", e.getMessage());
 	}
 
 	public boolean isValid(Film film)
