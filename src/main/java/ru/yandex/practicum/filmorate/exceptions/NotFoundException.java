@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class NotFoundException extends RuntimeException
 {
-	String element;
+	private final String element;
 
 	@Override
 	public String getMessage()

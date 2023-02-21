@@ -7,6 +7,8 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storages.FilmStorage;
 import ru.yandex.practicum.filmorate.storages.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storages.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storages.UserStorage;
 
 import java.util.Comparator;
 import java.util.List;
@@ -17,8 +19,7 @@ import java.util.stream.Collectors;
 public class FilmService
 {
 	private FilmStorage films;
-	@Autowired
-	private UserService userService;
+	private UserStorage users;
 
 	public void addLike(long filmId, long userId)
 	{
@@ -26,7 +27,7 @@ public class FilmService
 		{
 			throw new NotFoundException("Film ID" + filmId);
 		}
-		if(userService.userIsPresent(userId))
+		if(users.getUser(userId) == null)
 		{
 			throw new NotFoundException("User ID" + userId);
 		}
@@ -42,7 +43,7 @@ public class FilmService
 		{
 			throw new NotFoundException("Film ID" + filmId);
 		}
-		if(userService.userIsPresent(userId))
+		if(users.getUser(userId) == null)
 		{
 			throw new NotFoundException("User ID" + userId);
 		}
@@ -74,8 +75,9 @@ public class FilmService
 		films.replaceFilm(film);
 	}
 	@Autowired
-	public FilmService(InMemoryFilmStorage filmStorage)
+	public FilmService(InMemoryFilmStorage filmStorage, InMemoryUserStorage usersStorage)
 	{
 		films = filmStorage;
+		users = usersStorage;
 	}
 }

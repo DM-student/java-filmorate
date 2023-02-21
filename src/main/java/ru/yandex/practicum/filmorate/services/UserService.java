@@ -17,11 +17,6 @@ import java.util.stream.Collectors;
 public class UserService
 {
 	private UserStorage users;
-
-	public boolean userIsPresent(long id)
-	{
-		return users.getUsers().contains(id);
-	}
 	public void addFriend(long userId, long targetId)
 	{
 		if(users.getUser(userId) == null)
@@ -56,12 +51,12 @@ public class UserService
 		users.getUser(userId).getFriends().remove(targetId);
 		users.getUser(targetId).getFriends().remove(userId);
 	}
-	public List<User> getCommonFriends(long user1, long user2)
+	public List<User> getCommonFriends(long user, long otherUser)
 	{
-		Set<Long> user1Friends = users.getUser(user1).getFriends();
-		Set<Long> user2Friends = users.getUser(user2).getFriends();
+		Set<Long> userFriends = users.getUser(user).getFriends();
+		Set<Long> otherUserFriends = users.getUser(otherUser).getFriends();
 
-		return user1Friends.stream().filter(user2Friends::contains).map((id) -> users.getUser(id))
+		return userFriends.stream().filter(otherUserFriends::contains).map((id) -> users.getUser(id))
 				.collect(Collectors.toUnmodifiableList());
 	}
 	public List<User> getFriends(long id)

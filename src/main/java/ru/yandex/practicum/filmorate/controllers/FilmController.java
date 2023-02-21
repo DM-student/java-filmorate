@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -70,27 +71,24 @@ public class FilmController
 		if(count == null) { count = 10; }
 		return filmService.getPopular(count);
 	}
+
 	@ExceptionHandler
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public Map<String, String> validationException(ValidationException e)
+	public ResponseEntity<Map<String, String>> errorHandler(Throwable e)
 	{
-		return Map.of("error", e.getMessage());
-	}
-	@ExceptionHandler
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public Map<String, String> serverError(Throwable e)
-	{
-		return Map.of("error", "Данный запрос не может быть обработан.",
-				"errorInfo:", e.getMessage());
-	}
-	@ExceptionHandler
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public Map<String, String> notFoundError(NotFoundException e)
-	{
-		return Map.of("error", e.getMessage());
+		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+		if(e.getClass() == ValidationException.class) { status = HttpStatus.BAD_REQUEST; }
+		if(e.getClass() == IllegalArgumentException.class) { status = HttpStatus.BAD_REQUEST; }
+		if(e.getClass() == NotFoundException.class) { status = HttpStatus.NOT_FOUND; }
+
+		return new ResponseEntity<>(
+				Map.of("error", e.getClass().getSimpleName(),
+						"errorInfo", e.getMessage()),
+				status
+		);
 	}
 
-	public boolean isValid(Film film)
+	private boolean isValid(Film film)
 	{
 		if(!annotationValidator.isValid(film)) { return false; }
 		if(film.getName().isEmpty()) { return false; }
