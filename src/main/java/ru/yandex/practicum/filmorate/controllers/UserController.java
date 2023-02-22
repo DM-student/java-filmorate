@@ -73,6 +73,9 @@ public class UserController
 		return userService.getFriends(id);
 	}
 
+
+	// Пожалуйста, давайте оставим пока так. Из-за одного общего класса создавать родительский класс
+	// и реализовывать его наследование мне не особо хочется...
 	@ExceptionHandler
 	public ResponseEntity<Map<String, String>> errorHandler(Throwable e)
 	{

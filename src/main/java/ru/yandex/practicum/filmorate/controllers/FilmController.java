@@ -66,12 +66,13 @@ public class FilmController
 		filmService.removeLike(id, userId);
 	}
 	@GetMapping("/films/popular")
-	public List<Film> getPopular(@RequestParam(required = false) Integer count)
+	public List<Film> getPopular(@RequestParam(defaultValue = "10") Integer count) // Спасибо за совет.
 	{
-		if(count == null) { count = 10; }
 		return filmService.getPopular(count);
 	}
 
+	// Пожалуйста, давайте оставим пока так. Из-за одного общего класса создавать родительский класс
+	// и реализовывать его наследование мне не особо хочется...
 	@ExceptionHandler
 	public ResponseEntity<Map<String, String>> errorHandler(Throwable e)
 	{
