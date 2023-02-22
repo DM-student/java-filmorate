@@ -46,7 +46,7 @@ public class UserController
 		return user;
 	}
 	@PutMapping("/users")
-	public User ReplaceUser(@RequestBody User user)
+	public User replaceUser(@RequestBody User user)
 	{
 		if(!isValid(user)) { throw new ValidationException(); }
 		userService.replaceUser(user);

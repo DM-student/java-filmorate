@@ -48,7 +48,7 @@ public class FilmController
 		return film;
 	}
 	@PutMapping("/films")
-	public Film ReplaceFilm(@RequestBody Film film)
+	public Film replaceFilm(@RequestBody Film film)
 	{
 		if(!isValid(film)) {throw new ValidationException();}
 		filmService.replaceFilm(film);

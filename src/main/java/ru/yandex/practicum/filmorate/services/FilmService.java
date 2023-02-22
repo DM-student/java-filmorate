@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storages.FilmStorage;
 import ru.yandex.practicum.filmorate.storages.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storages.InMemoryUserStorage;
@@ -23,34 +24,42 @@ public class FilmService
 
 	public void addLike(long filmId, long userId)
 	{
-		if(films.getFilm(filmId) == null)
+		Film film = films.getFilm(filmId);
+		User user = users.getUser(userId);
+
+		if(film == null)
 		{
 			throw new NotFoundException("Film ID" + filmId);
 		}
-		if(users.getUser(userId) == null)
+		if(user == null)
 		{
 			throw new NotFoundException("User ID" + userId);
 		}
-		if(films.getFilm(filmId).getLikes().contains(userId))
+		if(film.getLikes().contains(userId))
 		{
 			throw new IllegalArgumentException("Данный фильм уже имеет лайк от данного пользователя.");
 		}
-		films.getFilm(filmId).getLikes().add(userId);
+		film.getLikes().add(userId);
 	}
 	public void removeLike(long filmId, long userId)
 	{
-		if(films.getFilm(filmId) == null)
+		Film film = films.getFilm(filmId);
+		User user = users.getUser(userId);
+
+		if(film == null)
 		{
 			throw new NotFoundException("Film ID" + filmId);
 		}
-		if(users.getUser(userId) == null)
+		if(user == null)
 		{
 			throw new NotFoundException("User ID" + userId);
 		}
-		if(!films.getFilm(filmId).getLikes().contains(userId))
+		if(!film.getLikes().contains(userId))
 		{
 			throw new NotFoundException("Like from User ID" + userId);
 		}
+		// Я проглядел это очень глупо... В прочем теперь всё исправно, проверки также исправны.
+		film.getLikes().remove(userId);
 	}
 	public List<Film> getPopular(int count)
 	{

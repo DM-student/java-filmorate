@@ -19,37 +19,43 @@ public class UserService
 	private UserStorage users;
 	public void addFriend(long userId, long targetId)
 	{
-		if(users.getUser(userId) == null)
+		User user = users.getUser(userId);
+		User target = users.getUser(targetId);
+
+		if(user == null)
 		{
 			throw new NotFoundException("User ID" + userId);
 		}
-		if(users.getUser(targetId) == null)
+		if(target == null)
 		{
 			throw new NotFoundException("User ID" + targetId);
 		}
-		if(users.getUser(userId).getFriends().contains(targetId))
+		if(user.getFriends().contains(targetId))
 		{
 			throw new IllegalArgumentException("Цель уже в друзьях у пользователя.");
 		}
-		users.getUser(userId).getFriends().add(targetId);
-		users.getUser(targetId).getFriends().add(userId);
+		user.getFriends().add(targetId);
+		target.getFriends().add(userId);
 	}
 	public void removeFriend(long userId, long targetId)
 	{
-		if(users.getUser(userId) == null)
+		User user = users.getUser(userId);
+		User target = users.getUser(targetId);
+
+		if(user == null)
 		{
 			throw new NotFoundException("User ID" + userId);
 		}
-		if(users.getUser(targetId) == null)
+		if(target == null)
 		{
 			throw new NotFoundException("User ID" + targetId);
 		}
-		if(!users.getUser(userId).getFriends().contains(targetId))
+		if(!user.getFriends().contains(targetId))
 		{
 			throw new NotFoundException("User ID" + userId +"`s friend with ID" + targetId);
 		}
-		users.getUser(userId).getFriends().remove(targetId);
-		users.getUser(targetId).getFriends().remove(userId);
+		user.getFriends().remove(targetId);
+		target.getFriends().remove(userId);
 	}
 	public List<User> getCommonFriends(long user, long otherUser)
 	{
