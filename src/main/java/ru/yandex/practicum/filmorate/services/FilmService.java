@@ -84,7 +84,7 @@ public class FilmService
 		films.replaceFilm(film);
 	}
 	@Autowired
-	public FilmService(InMemoryFilmStorage filmStorage, InMemoryUserStorage usersStorage)
+	public FilmService(FilmStorage filmStorage, UserStorage usersStorage)
 	{
 		films = filmStorage;
 		users = usersStorage;

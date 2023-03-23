@@ -88,7 +88,7 @@ public class UserService
 	}
 
 	@Autowired
-	public UserService(InMemoryUserStorage userStorage)
+	public UserService(UserStorage userStorage)
 	{
 		users = userStorage;
 	}

@@ -15,5 +15,7 @@ public class Film {
     @NotNull private String description;
     @NotNull private LocalDate releaseDate;
     @NotNull private int duration;
-    Set<Long> likes = new HashSet<>();
+    @NotNull private String rating;
+    private Set<Long> genres = new HashSet<>();
+    private Set<Long> likes = new HashSet<>();
 }
