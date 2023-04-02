@@ -12,41 +12,34 @@ import java.util.List;
 
 @Component
 @Primary
-public class DBUtilityStorage implements UtilityStorage
-{
-	@Autowired
-	private UtilityDataBase utilityDataBase;
+public class DBUtilityStorage implements UtilityStorage {
+    @Autowired
+    private UtilityDataBase utilityDataBase;
 
-	@Override
-	public Genre getGenre(long id)
-	{
-		if(utilityDataBase.getGenreById(id).isEmpty())
-		{
-			throw new NotFoundException("Genr ID" + id);
-		}
-		return utilityDataBase.getGenreById(id).get();
-	}
+    @Override
+    public Genre getGenre(long id) {
+        if (utilityDataBase.getGenreById(id).isEmpty()) {
+            throw new NotFoundException("Genr ID" + id);
+        }
+        return utilityDataBase.getGenreById(id).get();
+    }
 
-	@Override
-	public List<Genre> getGenres()
-	{
-		return utilityDataBase.getAllGenres();
-	}
+    @Override
+    public List<Genre> getGenres() {
+        return utilityDataBase.getAllGenres();
+    }
 
-	@Override
-	public MPA getMpa(long id)
-	{
+    @Override
+    public MPA getMpa(long id) {
 
-		if(utilityDataBase.getMpaById(id).isEmpty())
-		{
-			throw new NotFoundException("Mpa ID" + id);
-		}
-		return utilityDataBase.getMpaById(id).get();
-	}
+        if (utilityDataBase.getMpaById(id).isEmpty()) {
+            throw new NotFoundException("Mpa ID" + id);
+        }
+        return utilityDataBase.getMpaById(id).get();
+    }
 
-	@Override
-	public List<MPA> getMpas()
-	{
-		return utilityDataBase.getAllMpa();
-	}
+    @Override
+    public List<MPA> getMpas() {
+        return utilityDataBase.getAllMpa();
+    }
 }

@@ -16,25 +16,23 @@ import java.util.HashSet;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class FilmoRateApplicationTests
-{
-	// Формат тестов правильный же?
+class FilmoRateApplicationTests {
+    // Формат тестов правильный же?
 
-	private final DBUserStorage userStorage;
+    private final DBUserStorage userStorage;
 
-	public void setUp()
-	{
-		User user = new User(null, "some.mail@mymail.com", "myLogin",
-				"Dug Dag", LocalDate.of(2001, 2, 3), new HashSet<>());
-		userStorage.addUser(user);
-	}
-	@Test
-	public void testFindUserById()
-	{
-		setUp();
+    public void setUp() {
+        User user = new User(null, "some.mail@mymail.com", "myLogin",
+                "Dug Dag", LocalDate.of(2001, 2, 3), new HashSet<>());
+        userStorage.addUser(user);
+    }
 
-		User user = userStorage.getUser(1);
+    @Test
+    public void testFindUserById() {
+        setUp();
 
-		Assertions.assertEquals(user.getName(), "Dug Dag");
-	}
+        User user = userStorage.getUser(1);
+
+        Assertions.assertEquals(user.getName(), "Dug Dag");
+    }
 }

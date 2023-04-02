@@ -11,43 +11,36 @@ import java.util.List;
 
 @Component
 @Primary
-public class DBUserStorage implements UserStorage
-{
-	@Autowired
-	UserDataBase userDataBase;
-	@Override
-	public User getUser(long id)
-	{
-		if(userDataBase.getUserById(id).isEmpty())
-		{
-			throw new NotFoundException("User ID" + id);
-		}
-		return userDataBase.getUserById(id).get();
-	}
+public class DBUserStorage implements UserStorage {
+    @Autowired
+    UserDataBase userDataBase;
 
-	@Override
-	public List<User> getUsers()
-	{
-		return userDataBase.getAllUsers();
-	}
+    @Override
+    public User getUser(long id) {
+        if (userDataBase.getUserById(id).isEmpty()) {
+            throw new NotFoundException("User ID" + id);
+        }
+        return userDataBase.getUserById(id).get();
+    }
 
-	@Override
-	public void addUser(User user)
-	{
-		userDataBase.uploadUser(user);
-	}
+    @Override
+    public List<User> getUsers() {
+        return userDataBase.getAllUsers();
+    }
 
-	@Override
-	public void replaceUser(User user)
-	{
-		if(user.getId() == null)
-		{
-			throw new IllegalArgumentException("При попытке заменить объект User - идентификатор не был указан");
-		}
-		if(userDataBase.getUserById(user.getId()).isEmpty())
-		{
-			throw new NotFoundException("User ID" + user.getId());
-		}
-		userDataBase.updateUser(user);
-	}
+    @Override
+    public void addUser(User user) {
+        userDataBase.uploadUser(user);
+    }
+
+    @Override
+    public void replaceUser(User user) {
+        if (user.getId() == null) {
+            throw new IllegalArgumentException("При попытке заменить объект User - идентификатор не был указан");
+        }
+        if (userDataBase.getUserById(user.getId()).isEmpty()) {
+            throw new NotFoundException("User ID" + user.getId());
+        }
+        userDataBase.updateUser(user);
+    }
 }

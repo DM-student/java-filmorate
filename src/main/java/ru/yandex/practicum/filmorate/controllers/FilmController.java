@@ -16,61 +16,72 @@ import java.util.*;
 
 @RestController
 @Slf4j
-public class FilmController
-{
-	@Autowired
-	private AnnotationValidator annotationValidator;
-	@Autowired
-	private FilmService filmService;
+public class FilmController {
+    @Autowired
+    private AnnotationValidator annotationValidator;
+    @Autowired
+    private FilmService filmService;
 
-	@GetMapping("/films")
-	public List<Film> getFilms()
-	{
-		return filmService.getFilms();
-	}
-	@GetMapping("/films/{id}")
-	public Film getFilm(@PathVariable long id)
-	{
-		return filmService.getFilm(id);
-	}
-	@PostMapping("/films")
-	public Film addFilm(@RequestBody Film film)
-	{
-		if(!isValid(film)) {throw new ValidationException();}
-		filmService.addFilm(film);
-		return film;
-	}
-	@PutMapping("/films")
-	public Film replaceFilm(@RequestBody Film film)
-	{
-		if(!isValid(film)) {throw new ValidationException();}
-		filmService.replaceFilm(film);
-		return film;
-	}
+    @GetMapping("/films")
+    public List<Film> getFilms() {
+        return filmService.getFilms();
+    }
 
-	@PutMapping("/films/{id}/like/{userId}")
-	public void addLike(@PathVariable long id, @PathVariable long userId)
-	{
-		filmService.addLike(id, userId);
-	}
-	@DeleteMapping("/films/{id}/like/{userId}")
-	public void removeLike(@PathVariable long id, @PathVariable long userId)
-	{
-		filmService.removeLike(id, userId);
-	}
-	@GetMapping("/films/popular")
-	public List<Film> getPopular(@RequestParam(defaultValue = "10") Integer count) // Спасибо за совет.
-	{
-		return filmService.getPopular(count);
-	}
+    @GetMapping("/films/{id}")
+    public Film getFilm(@PathVariable long id) {
+        return filmService.getFilm(id);
+    }
 
-	private boolean isValid(Film film)
-	{
-		if(!annotationValidator.isValid(film)) { return false; }
-		if(film.getName().isEmpty()) { return false; }
-		if(film.getDescription().length() > 200) { return false; }
-		if(film.getDuration() < 0) { return false; }
-		if(film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) { return false; }
-		return true;
-	}
+    @PostMapping("/films")
+    public Film addFilm(@RequestBody Film film) {
+        if (!isValid(film)) {
+            throw new ValidationException();
+        }
+        filmService.addFilm(film);
+        return film;
+    }
+
+    @PutMapping("/films")
+    public Film replaceFilm(@RequestBody Film film) {
+        if (!isValid(film)) {
+            throw new ValidationException();
+        }
+        filmService.replaceFilm(film);
+        return film;
+    }
+
+    @PutMapping("/films/{id}/like/{userId}")
+    public void addLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/films/{id}/like/{userId}")
+    public void removeLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.removeLike(id, userId);
+    }
+
+    @GetMapping("/films/popular")
+    public List<Film> getPopular(@RequestParam(defaultValue = "10") Integer count) // Спасибо за совет.
+    {
+        return filmService.getPopular(count);
+    }
+
+    private boolean isValid(Film film) {
+        if (!annotationValidator.isValid(film)) {
+            return false;
+        }
+        if (film.getName().isEmpty()) {
+            return false;
+        }
+        if (film.getDescription().length() > 200) {
+            return false;
+        }
+        if (film.getDuration() < 0) {
+            return false;
+        }
+        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            return false;
+        }
+        return true;
+    }
 }

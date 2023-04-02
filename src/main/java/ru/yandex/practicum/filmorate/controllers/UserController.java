@@ -17,64 +17,73 @@ import java.util.*;
 
 @RestController
 @Slf4j
-public class UserController
-{
-	@Autowired
-	private AnnotationValidator annotationValidator;
-	@Autowired
-	private UserService userService;
+public class UserController {
+    @Autowired
+    private AnnotationValidator annotationValidator;
+    @Autowired
+    private UserService userService;
 
-	@GetMapping("/users")
-	public List<User> getUsers()
-	{
-		return userService.getUsers();
-	}
-	@GetMapping("/users/{id}")
-	public User getUser(@PathVariable long id)
-	{
-		return userService.getUser(id);
-	}
-	@PostMapping("/users")
-	public User addUser(@RequestBody User user)
-	{
-		if(!isValid(user)) { throw new ValidationException(); }
-		userService.addUser(user);
-		return user;
-	}
-	@PutMapping("/users")
-	public User replaceUser(@RequestBody User user)
-	{
-		if(!isValid(user)) { throw new ValidationException(); }
-		userService.replaceUser(user);
-		return user;
-	}
-	@PutMapping("/users/{id}/friends/{friendId}")
-	public void addFriend(@PathVariable long id, @PathVariable long friendId)
-	{
-		userService.addFriend(id, friendId);
-	}
-	@DeleteMapping("/users/{id}/friends/{friendId}")
-	public void removeFriend(@PathVariable long id, @PathVariable long friendId)
-	{
-		userService.removeFriend(id, friendId);
-	}
-	@GetMapping("/users/{id}/friends/common/{friendId}")
-	public List<User> getCommonFriends(@PathVariable long id, @PathVariable long friendId)
-	{
-		return userService.getCommonFriends(id, friendId);
-	}
-	@GetMapping("/users/{id}/friends")
-	public List<User> getFriends(@PathVariable long id)
-	{
-		return userService.getFriends(id);
-	}
+    @GetMapping("/users")
+    public List<User> getUsers() {
+        return userService.getUsers();
+    }
 
-	private boolean isValid(User user)
-	{
-		if(!annotationValidator.isValid(user)) { return false; }
-		if(user.getName() == null || user.getName().isEmpty()) { user.setName(user.getLogin()); }
-		if(user.getLogin().isEmpty() || user.getLogin().contains(" ")) { return false; }
-		if(user.getBirthday().isAfter(LocalDate.now())) { return false; }
-		return true;
-	}
+    @GetMapping("/users/{id}")
+    public User getUser(@PathVariable long id) {
+        return userService.getUser(id);
+    }
+
+    @PostMapping("/users")
+    public User addUser(@RequestBody User user) {
+        if (!isValid(user)) {
+            throw new ValidationException();
+        }
+        userService.addUser(user);
+        return user;
+    }
+
+    @PutMapping("/users")
+    public User replaceUser(@RequestBody User user) {
+        if (!isValid(user)) {
+            throw new ValidationException();
+        }
+        userService.replaceUser(user);
+        return user;
+    }
+
+    @PutMapping("/users/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable long id, @PathVariable long friendId) {
+        userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/users/{id}/friends/{friendId}")
+    public void removeFriend(@PathVariable long id, @PathVariable long friendId) {
+        userService.removeFriend(id, friendId);
+    }
+
+    @GetMapping("/users/{id}/friends/common/{friendId}")
+    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long friendId) {
+        return userService.getCommonFriends(id, friendId);
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public List<User> getFriends(@PathVariable long id) {
+        return userService.getFriends(id);
+    }
+
+    private boolean isValid(User user) {
+        if (!annotationValidator.isValid(user)) {
+            return false;
+        }
+        if (user.getName() == null || user.getName().isEmpty()) {
+            user.setName(user.getLogin());
+        }
+        if (user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
+            return false;
+        }
+        if (user.getBirthday().isAfter(LocalDate.now())) {
+            return false;
+        }
+        return true;
+    }
 }

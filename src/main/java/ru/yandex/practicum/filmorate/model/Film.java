@@ -15,10 +15,14 @@ import java.util.Set;
 @NoArgsConstructor
 public class Film {
     private Long id;
-    @NotNull private String name;
-    @NotNull private String description;
-    @NotNull private LocalDate releaseDate;
-    @NotNull private int duration;
+    @NotNull
+    private String name;
+    @NotNull
+    private String description;
+    @NotNull
+    private LocalDate releaseDate;
+    @NotNull
+    private int duration;
     private MPA mpa;
     private Integer rate; // тесты в постмане требуют этого поля...
     private Set<Genre> genres = new HashSet<>();

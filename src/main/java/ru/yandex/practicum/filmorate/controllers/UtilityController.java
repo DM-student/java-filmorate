@@ -11,29 +11,27 @@ import ru.yandex.practicum.filmorate.services.UtilityService;
 import java.util.List;
 
 @RestController
-public class UtilityController
-{
-	@Autowired
-	UtilityService utilityService;
+public class UtilityController {
+    @Autowired
+    UtilityService utilityService;
 
-	@GetMapping("/genres/{id}")
-	public Genre getGenre(@PathVariable long id)
-	{
-		return utilityService.getGenre(id);
-	}
-	@GetMapping("/genres")
-	public List<Genre> getGenres()
-	{
-		return utilityService.getGenres();
-	}
-	@GetMapping("/mpa/{id}")
-	public MPA getMpa(@PathVariable long id)
-	{
-		return utilityService.getMpa(id);
-	}
-	@GetMapping("/mpa")
-	public List<MPA> getMpas()
-	{
-		return utilityService.getMpas();
-	}
+    @GetMapping("/genres/{id}")
+    public Genre getGenre(@PathVariable long id) {
+        return utilityService.getGenre(id);
+    }
+
+    @GetMapping("/genres")
+    public List<Genre> getGenres() {
+        return utilityService.getGenres();
+    }
+
+    @GetMapping("/mpa/{id}")
+    public MPA getMpa(@PathVariable long id) {
+        return utilityService.getMpa(id);
+    }
+
+    @GetMapping("/mpa")
+    public List<MPA> getMpas() {
+        return utilityService.getMpas();
+    }
 }
