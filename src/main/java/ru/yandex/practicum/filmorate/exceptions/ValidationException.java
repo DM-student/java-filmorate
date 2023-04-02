@@ -14,6 +14,7 @@ public class ValidationException extends RuntimeException
 
 	public ValidationException()
 	{
+		super();
 		log.error("Произошла ошибка валидации.");
 	}
 }

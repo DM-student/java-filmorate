@@ -1,10 +1,16 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.FilmorateApplication;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.services.AnnotationValidator;
+import ru.yandex.practicum.filmorate.services.FilmService;
+import ru.yandex.practicum.filmorate.services.UserService;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -13,45 +19,84 @@ import java.util.*;
 @Slf4j
 public class UserController
 {
-	// Пока это будет так хранится.
-	private Map<Integer, User> users = new HashMap<>();
-	private int lastId = 0;
+	@Autowired
+	private AnnotationValidator annotationValidator;
+	@Autowired
+	private UserService userService;
 
 	@GetMapping("/users")
 	public List<User> getUsers()
 	{
-		return new ArrayList<>(users.values());
+		return userService.getUsers();
 	}
 	@GetMapping("/users/{id}")
-	public User getUser(@PathVariable int id)
+	public User getUser(@PathVariable long id)
 	{
-		return users.get(id);
+		if(userService.getUser(id) == null)
+		{
+			throw new NotFoundException("User ID" + id);
+		}
+		return userService.getUser(id);
 	}
 	@PostMapping("/users")
 	public User addUser(@RequestBody User user)
 	{
-		validate(user);
-		users.put(lastId + 1, user);
-		user.setId(lastId + 1);
-		lastId++;
-		log.info("Пользователь был добавлен, его номер: " + lastId);
+		if(!isValid(user)) { throw new ValidationException(); }
+		userService.addUser(user);
 		return user;
 	}
 	@PutMapping("/users")
-	public User ReplaceUser(@RequestBody User user)
+	public User replaceUser(@RequestBody User user)
 	{
-		if(!users.containsKey(user.getId())) { throw new IllegalArgumentException(); }
-		validate(user);
-		users.replace(user.getId(), user);
-		log.info("Пользователь номер " + user.getId() + " был обновлён.");
+		if(!isValid(user)) { throw new ValidationException(); }
+		userService.replaceUser(user);
 		return user;
 	}
-
-	public static void validate(User user)
+	@PutMapping("/users/{id}/friends/{friendId}")
+	public void addFriend(@PathVariable long id, @PathVariable long friendId)
 	{
-		if(!FilmorateApplication.validator.validate(user).isEmpty()) { throw new ValidationException(); }
-		if (user.getName() == null || user.getName().isEmpty()) {user.setName(user.getLogin());}
-		if(user.getLogin().isEmpty() || user.getLogin().contains(" ")) { throw new ValidationException(); }
-		if(user.getBirthday().isAfter(LocalDate.now())) { throw new ValidationException(); }
+		userService.addFriend(id, friendId);
+	}
+	@DeleteMapping("/users/{id}/friends/{friendId}")
+	public void removeFriend(@PathVariable long id, @PathVariable long friendId)
+	{
+		userService.removeFriend(id, friendId);
+	}
+	@GetMapping("/users/{id}/friends/common/{friendId}")
+	public List<User> getCommonFriends(@PathVariable long id, @PathVariable long friendId)
+	{
+		return userService.getCommonFriends(id, friendId);
+	}
+	@GetMapping("/users/{id}/friends")
+	public List<User> getFriends(@PathVariable long id)
+	{
+		return userService.getFriends(id);
+	}
+
+
+	// Пожалуйста, давайте оставим пока так. Из-за одного общего класса создавать родительский класс
+	// и реализовывать его наследование мне не особо хочется...
+	@ExceptionHandler
+	public ResponseEntity<Map<String, String>> errorHandler(Throwable e)
+	{
+		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+		if(e.getClass() == ValidationException.class) { status = HttpStatus.BAD_REQUEST; }
+		if(e.getClass() == IllegalArgumentException.class) { status = HttpStatus.BAD_REQUEST; }
+		if(e.getClass() == NotFoundException.class) { status = HttpStatus.NOT_FOUND; }
+
+		return new ResponseEntity<>(
+				Map.of("error", e.getClass().getSimpleName(),
+						"errorInfo", e.getMessage()),
+				status
+		);
+	}
+	private boolean isValid(User user)
+	{
+		if(!annotationValidator.isValid(user)) { return false; }
+		if(user.getName() == null || user.getName().isEmpty()) { user.setName(user.getLogin()); }
+		if(user.getLogin().isEmpty() || user.getLogin().contains(" ")) { return false; }
+		if(user.getBirthday().isAfter(LocalDate.now())) { return false; }
+		return true;
 	}
 }
