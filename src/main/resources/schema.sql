@@ -1,0 +1,43 @@
+CREATE TABLE IF NOT EXISTS users (
+        id BIGINT NOT NULL PRIMARY KEY,
+        email VARCHAR(80) NOT NULL,
+        login VARCHAR(80) NOT NULL,
+        name VARCHAR(80),
+        birthday DATE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS users_to_friends (
+	user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	friend_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS genres (
+        id BIGINT NOT NULL PRIMARY KEY,
+        name VARCHAR(80) NOT NULL
+); 
+
+CREATE TABLE IF NOT EXISTS mpa (
+        id BIGINT NOT NULL PRIMARY KEY,
+        name VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS films (
+        id BIGINT NOT NULL PRIMARY KEY,
+        name VARCHAR(80) NOT NULL,
+        description VARCHAR(360) NOT NULL,
+        release_date DATE NOT NULL,
+        duration int NOT NULL,
+        mpa_id BIGINT REFERENCES mpa(id) ON DELETE SET NULL,
+        rate int
+);
+
+CREATE TABLE IF NOT EXISTS films_to_likes (
+	film_id BIGINT NOT NULL REFERENCES films(id) ON DELETE CASCADE,
+	like_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS films_to_genres (
+	film_id BIGINT NOT NULL REFERENCES films(id) ON DELETE CASCADE,
+	genre_id BIGINT NOT NULL REFERENCES genres(id) ON DELETE CASCADE
+);
