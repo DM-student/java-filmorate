@@ -15,7 +15,7 @@ import java.util.*;
 public class FilmDataBase {
     @Autowired
     UtilityDataBase utilityDataBase;
-    final private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public long getLastId() {
         long id = 0;
