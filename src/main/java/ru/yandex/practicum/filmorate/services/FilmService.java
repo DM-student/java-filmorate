@@ -7,8 +7,6 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storages.FilmStorage;
-import ru.yandex.practicum.filmorate.storages.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storages.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storages.UserStorage;
 
 import java.util.Comparator;
