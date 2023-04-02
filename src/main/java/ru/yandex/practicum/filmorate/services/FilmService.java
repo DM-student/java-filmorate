@@ -40,6 +40,7 @@ public class FilmService
 			throw new IllegalArgumentException("Данный фильм уже имеет лайк от данного пользователя.");
 		}
 		film.getLikes().add(userId);
+		replaceFilm(film);
 	}
 	public void removeLike(long filmId, long userId)
 	{
@@ -58,11 +59,13 @@ public class FilmService
 		{
 			throw new NotFoundException("Like from User ID" + userId);
 		}
-		// Я проглядел это очень глупо... В прочем теперь всё исправно, проверки также исправны.
 		film.getLikes().remove(userId);
+		replaceFilm(film);
 	}
 	public List<Film> getPopular(int count)
 	{
+		// Наверное стоит перенести поиск популярных фильмов в запрос SQL, или так тоже сойдёт?
+		// Просто для этого придётся менять интерфейс хранилища, добавляя новый метод.
 		return films.getFilms().stream().sorted(Comparator.comparingInt(x -> -x.getLikes().size()))
 				.limit(count).collect(Collectors.toUnmodifiableList());
 	}

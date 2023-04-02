@@ -12,10 +12,7 @@ import ru.yandex.practicum.filmorate.services.AnnotationValidator;
 import ru.yandex.practicum.filmorate.services.FilmService;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @Slf4j
@@ -34,10 +31,6 @@ public class FilmController
 	@GetMapping("/films/{id}")
 	public Film getFilm(@PathVariable long id)
 	{
-		if(filmService.getFilm(id) == null)
-		{
-			throw new NotFoundException("Film ID" + id);
-		}
 		return filmService.getFilm(id);
 	}
 	@PostMapping("/films")
@@ -69,24 +62,6 @@ public class FilmController
 	public List<Film> getPopular(@RequestParam(defaultValue = "10") Integer count) // Спасибо за совет.
 	{
 		return filmService.getPopular(count);
-	}
-
-	// Пожалуйста, давайте оставим пока так. Из-за одного общего класса создавать родительский класс
-	// и реализовывать его наследование мне не особо хочется...
-	@ExceptionHandler
-	public ResponseEntity<Map<String, String>> errorHandler(Throwable e)
-	{
-		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
-		if(e.getClass() == ValidationException.class) { status = HttpStatus.BAD_REQUEST; }
-		if(e.getClass() == IllegalArgumentException.class) { status = HttpStatus.BAD_REQUEST; }
-		if(e.getClass() == NotFoundException.class) { status = HttpStatus.NOT_FOUND; }
-
-		return new ResponseEntity<>(
-				Map.of("error", e.getClass().getSimpleName(),
-						"errorInfo", e.getMessage()),
-				status
-		);
 	}
 
 	private boolean isValid(Film film)

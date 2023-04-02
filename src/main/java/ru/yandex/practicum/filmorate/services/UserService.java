@@ -35,7 +35,7 @@ public class UserService
 			throw new IllegalArgumentException("Цель уже в друзьях у пользователя.");
 		}
 		user.getFriends().add(targetId);
-		target.getFriends().add(userId);
+		users.replaceUser(user);
 	}
 	public void removeFriend(long userId, long targetId)
 	{
@@ -55,7 +55,7 @@ public class UserService
 			throw new NotFoundException("User ID" + userId +"`s friend with ID" + targetId);
 		}
 		user.getFriends().remove(targetId);
-		target.getFriends().remove(userId);
+		users.replaceUser(user);
 	}
 	public List<User> getCommonFriends(long user, long otherUser)
 	{

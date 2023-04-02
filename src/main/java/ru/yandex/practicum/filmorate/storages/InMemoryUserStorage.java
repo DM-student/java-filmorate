@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// Более не актуально
 @Slf4j
-@Component
 public class InMemoryUserStorage implements UserStorage
 {
 	private Map<Long, User> users = new HashMap<>();

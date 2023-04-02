@@ -32,10 +32,6 @@ public class UserController
 	@GetMapping("/users/{id}")
 	public User getUser(@PathVariable long id)
 	{
-		if(userService.getUser(id) == null)
-		{
-			throw new NotFoundException("User ID" + id);
-		}
 		return userService.getUser(id);
 	}
 	@PostMapping("/users")
@@ -73,24 +69,6 @@ public class UserController
 		return userService.getFriends(id);
 	}
 
-
-	// Пожалуйста, давайте оставим пока так. Из-за одного общего класса создавать родительский класс
-	// и реализовывать его наследование мне не особо хочется...
-	@ExceptionHandler
-	public ResponseEntity<Map<String, String>> errorHandler(Throwable e)
-	{
-		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-
-		if(e.getClass() == ValidationException.class) { status = HttpStatus.BAD_REQUEST; }
-		if(e.getClass() == IllegalArgumentException.class) { status = HttpStatus.BAD_REQUEST; }
-		if(e.getClass() == NotFoundException.class) { status = HttpStatus.NOT_FOUND; }
-
-		return new ResponseEntity<>(
-				Map.of("error", e.getClass().getSimpleName(),
-						"errorInfo", e.getMessage()),
-				status
-		);
-	}
 	private boolean isValid(User user)
 	{
 		if(!annotationValidator.isValid(user)) { return false; }
