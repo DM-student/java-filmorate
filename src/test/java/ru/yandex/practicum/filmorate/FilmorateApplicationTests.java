@@ -16,7 +16,7 @@ import java.util.HashSet;
 @SpringBootTest
 @AutoConfigureTestDatabase
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-class FilmoRateApplicationTests {
+class FilmorateApplicationTests {
     // Формат тестов правильный же?
 
     private final DBUserStorage userStorage;
