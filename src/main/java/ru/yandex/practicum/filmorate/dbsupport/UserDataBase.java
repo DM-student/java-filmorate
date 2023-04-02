@@ -13,7 +13,7 @@ import java.util.*;
 @Component
 @Slf4j
 public class UserDataBase {
-    final private JdbcTemplate jdbcTemplate;
+    private final  JdbcTemplate jdbcTemplate;
 
     public long getLastId() {
         long id = 0;
