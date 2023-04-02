@@ -14,9 +14,8 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class UtilityDataBase
-// Как я понял, не требуется реализация записи для рейтинга и жанров, но возможно я ошибаюсь.
-{
+public class UtilityDataBase {
+    // Как я понял, не требуется реализация записи для рейтинга и жанров, но возможно я ошибаюсь.
     private final JdbcTemplate jdbcTemplate;
 
     public Optional<Genre> getGenreById(long id) {
