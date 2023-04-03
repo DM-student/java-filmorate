@@ -49,9 +49,7 @@ class FilmorateApplicationUserDBTests {
     void testFailFindUserById() {
 
         Assertions.assertThrows(NotFoundException.class, () ->
-        {
-            userStorage.getUser(99999);
-        });
+                userStorage.getUser(99999));
     }
 
     @Test
