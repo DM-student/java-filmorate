@@ -55,9 +55,7 @@ public class FilmorateApplicationFilmDBTests {
     @Test
     void testFailFilmSearch() {
         Assertions.assertThrows(NotFoundException.class, () ->
-        {
-            filmStorage.getFilm(9999);
-        });
+                filmStorage.getFilm(9999));
     }
 
     @Test
