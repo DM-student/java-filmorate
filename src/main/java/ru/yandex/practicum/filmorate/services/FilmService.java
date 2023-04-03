@@ -9,9 +9,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storages.FilmStorage;
 import ru.yandex.practicum.filmorate.storages.UserStorage;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -54,10 +52,7 @@ public class FilmService {
     }
 
     public List<Film> getPopular(int count) {
-        // Наверное стоит перенести поиск популярных фильмов в запрос SQL, или так тоже сойдёт?
-        // Просто для этого придётся менять интерфейс хранилища, добавляя новый метод.
-        return films.getFilms().stream().sorted(Comparator.comparingInt(x -> -x.getLikes().size()))
-                .limit(count).collect(Collectors.toUnmodifiableList());
+        return films.getPopularFilms(count);
     }
 
     public Film getFilm(long id) {

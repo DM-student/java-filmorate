@@ -1,19 +1,25 @@
-package ru.yandex.practicum.filmorate.dbsupport;
+package ru.yandex.practicum.filmorate.storages;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.sql.Date;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
+@Primary
 @Slf4j
-public class UserDataBase {
-    private final  JdbcTemplate jdbcTemplate;
+public class DataBaseUserStorage implements UserStorage {
+    private final JdbcTemplate jdbcTemplate;
 
     public long getLastId() {
         long id = 0;
@@ -24,7 +30,8 @@ public class UserDataBase {
         return id;
     }
 
-    public Optional<User> getUserById(long id) {
+    @Override
+    public User getUser(long id) {
         SqlRowSet sqlRows = jdbcTemplate.queryForRowSet("select * from users where id = ?", id);
 
         // обрабатываем результат выполнения запроса
@@ -39,14 +46,14 @@ public class UserDataBase {
                     getFriends(id));
             log.info("Найден пользователь в БД: {} {}", user.getId(), user.getLogin());
 
-            return Optional.of(user);
+            return user;
         } else {
-            log.info("Пользователь с идентификатором {} не найден в БД.", id);
-            return Optional.empty();
+            throw new NotFoundException("User ID" + id);
         }
     }
 
-    public void uploadUser(User user) {
+    @Override
+    public void addUser(User user) {
         String sqlQuery = "insert into users(id, email, login, name, birthday) " +
                 "values (?, ?, ?, ?, ?)";
         user.setId(getLastId() + 1);
@@ -56,7 +63,14 @@ public class UserDataBase {
         log.info("Новый пользователь создан в БД.");
     }
 
-    public void updateUser(User user) {
+    @Override
+    public void replaceUser(User user) {
+        if (user.getId() == null) {
+            throw new IllegalArgumentException("При попытке заменить объект User - идентификатор не был указан");
+        }
+        getUser(user.getId()); // Если такая запись не будет найдена - выкинет ошибку 404.
+
+
         String sqlQuery = "update users set email = ?, login = ?, name = ?, birthday = ? where id = ?";
         jdbcTemplate.update(sqlQuery, user.getEmail(), user.getLogin(),
                 user.getName(), Date.valueOf(user.getBirthday()), user.getId());
@@ -64,7 +78,8 @@ public class UserDataBase {
         log.info("Пользователь под номером {} был обновлён.", user.getId());
     }
 
-    public List<User> getAllUsers() {
+    @Override
+    public List<User> getUsers() {
         List<User> users = new ArrayList<>();
         SqlRowSet sqlRows = jdbcTemplate.queryForRowSet("select * from users");
         while (sqlRows.next()) {
@@ -106,7 +121,7 @@ public class UserDataBase {
     }
 
     @Autowired
-    public UserDataBase(JdbcTemplate jdbcTemplate) {
+    public DataBaseUserStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 }

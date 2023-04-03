@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS users (
         id BIGINT NOT NULL PRIMARY KEY,
-        email VARCHAR(80) NOT NULL,
+        email VARCHAR(320) NOT NULL,
         login VARCHAR(80) NOT NULL,
-        name VARCHAR(80),
+        name VARCHAR(80) NOT NULL,
         birthday DATE NOT NULL
 );
 

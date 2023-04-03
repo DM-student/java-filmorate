@@ -1,3 +1,4 @@
+/* Своеобразный бекап на случай, если я не правильно понял совет/замечание ревьювера.
 package ru.yandex.practicum.filmorate.storages;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,3 +45,4 @@ public class DBUserStorage implements UserStorage {
         userDataBase.updateUser(user);
     }
 }
+ */

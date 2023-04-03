@@ -9,6 +9,8 @@ public interface FilmStorage {
 
     List<Film> getFilms();
 
+    List<Film> getPopularFilms(int limit);
+
     void addFilm(Film film);
 
     void replaceFilm(Film film);

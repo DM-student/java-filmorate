@@ -1,24 +1,31 @@
-package ru.yandex.practicum.filmorate.dbsupport;
+package ru.yandex.practicum.filmorate.storages;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MPA;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@Primary
 @Slf4j
-public class UtilityDataBase {
+public class DataBaseUtilityStorage implements UtilityStorage {
     // Как я понял, не требуется реализация записи для рейтинга и жанров, но возможно я ошибаюсь.
     private final JdbcTemplate jdbcTemplate;
 
-    public Optional<Genre> getGenreById(long id) {
+    @Override
+    public Genre getGenre(long id) {
         SqlRowSet sqlRows = jdbcTemplate.queryForRowSet("select * from genres where id = ?", id);
 
         // обрабатываем результат выполнения запроса
@@ -27,14 +34,15 @@ public class UtilityDataBase {
                     sqlRows.getString("name"));
             log.info("Найден жанр в БД: {} {}", genre.getId(), genre.getName());
 
-            return Optional.of(genre);
+            return genre;
         } else {
             log.info("Жанр с идентификатором {} не найден в БД.", id);
-            return Optional.empty();
+            throw new NotFoundException("Genre ID" + id);
         }
     }
 
-    public List<Genre> getAllGenres() {
+    @Override
+    public List<Genre> getGenres() {
         List<Genre> genres = new ArrayList<>();
         SqlRowSet sqlRows = jdbcTemplate.queryForRowSet("select * from genres");
         while (sqlRows.next()) {
@@ -50,7 +58,7 @@ public class UtilityDataBase {
         Set<Genre> genres = new HashSet<>();
         SqlRowSet sqlRows = jdbcTemplate.queryForRowSet("select * from films_to_genres where film_id = ? order by genre_id", filmId);
         while (sqlRows.next()) {
-            genres.add(getGenreById(sqlRows.getLong("genre_id")).get());
+            genres.add(getGenre(sqlRows.getLong("genre_id")));
         }
         return genres;
     }
@@ -67,7 +75,8 @@ public class UtilityDataBase {
         }
     }
 
-    public Optional<MPA> getMpaById(long id) {
+    @Override
+    public MPA getMpa(long id) {
         SqlRowSet sqlRows = jdbcTemplate.queryForRowSet("select * from mpa where id = ?", id);
 
         // обрабатываем результат выполнения запроса
@@ -76,15 +85,16 @@ public class UtilityDataBase {
                     sqlRows.getString("name"));
             log.info("Найден рейтинг в БД: {} {}", mpa.getId(), mpa.getName());
 
-            return Optional.of(mpa);
+            return mpa;
         } else {
             log.info("Рейтинг с идентификатором {} не найден в БД.", id);
-            return Optional.empty();
+            throw new NotFoundException("MPA ID" + id);
         }
     }
 
 
-    public List<MPA> getAllMpa() {
+    @Override
+    public List<MPA> getMpas() {
         List<MPA> mpas = new ArrayList<>();
         SqlRowSet sqlRows = jdbcTemplate.queryForRowSet("select * from mpa");
         while (sqlRows.next()) {
@@ -97,7 +107,7 @@ public class UtilityDataBase {
     }
 
     @Autowired
-    public UtilityDataBase(JdbcTemplate jdbcTemplate) {
+    public DataBaseUtilityStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 }
